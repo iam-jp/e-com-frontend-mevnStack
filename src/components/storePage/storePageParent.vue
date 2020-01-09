@@ -1,4 +1,4 @@
-<template>
+thejasshop.com5000<template>
 <div>
     <div>
     <banners :files=files></banners>
@@ -48,7 +48,7 @@ components:{
 methods:{
     loadBanners(){
       var vm =this
-    axios.get('http://localhost:5000/bannerupload')
+    axios.get('http://thejasshop.com:5000/bannerupload')
       .then(res => {
         res.data
         .forEach(data=>{
@@ -63,7 +63,7 @@ methods:{
       })
     },
     loadStoreDetails(name){
-        axios.get('http://localhost:5000/store_by_name/'+name)
+        axios.get('http://thejasshop.com:5000/store_by_name/'+name)
         .then(res=>{
             this.store=(res.data)
         })

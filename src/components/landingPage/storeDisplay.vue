@@ -57,7 +57,7 @@ export default {
   },
   methods:{
     loadProducts(storeId){
-      axios.get('http://localhost:5000/stores/product_list/' + storeId)
+      axios.get('http://thejasshop.com:5000/stores/product_list/' + storeId)
       .then(res=>{
         const list = res.data
        list.forEach(element=>{

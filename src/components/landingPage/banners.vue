@@ -52,7 +52,7 @@ export default {
     
     mounted () {
       var vm =this
-    axios.get('http://localhost:5000/bannerupload')
+    axios.get('http://thejasshop.com:5000/bannerupload')
       .then(res => {
         res.data
         .forEach(data=>{

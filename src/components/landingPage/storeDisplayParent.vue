@@ -1,4 +1,4 @@
-<template>
+jasshop.com<template>
 <div>
     <banners :files = files ></banners>
     <div class="header" v-for="(store , i ) in stores" v-bind:key="i">
@@ -78,7 +78,7 @@ export default {
     },
     methods:{
         loadStores(){
-      axios.get('http://localhost:5000/stores')
+      axios.get('http://thejasshop.com:5000/stores')
       .then(res => {
         const data = res.data
         this.stores=data  
@@ -86,7 +86,7 @@ export default {
     },
     loadBanners(){
       var vm =this
-    axios.get('http://localhost:5000/bannerupload')
+    axios.get('http://thejasshop.com:5000/bannerupload')
       .then(res => {
         res.data
         .forEach(data=>{

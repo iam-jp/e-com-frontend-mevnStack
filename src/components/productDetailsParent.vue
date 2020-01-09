@@ -43,7 +43,7 @@ export default {
     },
     methods:{
         loadProducts(id){
-            axios.get('http://localhost:5000/products_by_id/' + id)
+            axios.get('http://thejasshop.com:5000/products_by_id/' + id)
             .then((res)=>{
                 this.product = res.data
             })

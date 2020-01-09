@@ -59,7 +59,7 @@ export default {
     },
     methods:{
         loadData(){
-            axios.get('http://localhost:5000/get_online_products')
+            axios.get('http://thejasshop.com:5000/get_online_products')
             .then((res)=>{
                 this.products = res.data
                 
