@@ -1,0 +1,106 @@
+<template>
+<!-- eslint-disable -->
+<div>
+  <!-- header -->  
+<nav class="navbar fixed-top navbar-expand-md navbar-dark" style="background-color:white; border-bottom:1px solid whitesmoke;">
+    <div class="container-fluid" style="height:50px;">
+       <!-- router link  (logo) -->
+      <router-link to="/"  active-class="active" exact>
+      <a class="navbar-brand">
+        <img src="./../../assets/Logo2.png" > </a>
+        </router-link>
+       
+        <!-- input (location)  -->
+        <span> 
+          <i class="fa fa-map-marker" aria-hidden="true" style="font-size:22px;color:teal; padding-right:10px;" @click="locationFetching()"></i>
+          </span>
+         <input type="text" :placeholder=address style="width:230px; height:35px; outline:0; border-width: 0 0 1px; border-color:forestgreen; font-family:roboto; font-weight:300;">
+        
+         <!-- page navigations -->
+        <div class="collapse navbar-collapse justify-content-end" id="navbarsExampleDefault">
+            <ul class="navbar-nav">
+            <!--icons(offers)-->
+              <div class="input-group input-group-sm">
+                 <i class="fa fa-percent" aria-hidden="true" style="font-size:14px;color:teal; margin-left:30px; margin-top:10px"></i>
+             </div> 
+              <!-- router link (offers) -->
+                  
+                <router-link to="#" tag="li" active-class="active" exact><a class="nav-link" style="color:black; font-size: 12px;" >Offers</a></router-link>
+              
+               <!--icons(account)-->
+                <div class="input-group input-group-sm"> 
+                  <i class="fa fa-user" aria-hidden="true" style="font-size:14px;color:teal; margin-left:20px; margin-top:10px"></i>
+                </div>
+                 <!-- router link (account) -->
+                <router-link to="#" tag="li"  active-class="active" ><a class="nav-link" style="color:black; font-size: 12px; text-decoration:none;" >Account <span class="sr-only">(current)</span></a></router-link>
+              
+              <!--icons(wishlist)-->
+               <div class="input-group input-group-sm"> 
+                 <i class="fa fa-heart" aria-hidden="true" style="font-size:14px;color:teal; margin-left:20px; margin-top:10px"></i>
+               </div>
+               <!-- router link (wishlist) -->
+              <router-link to="#" tag="li" active-class="active" exact><a class="nav-link" style="color:black; font-size:12px; padding-right:20px">Wishlist</a></router-link>
+            </ul>
+
+              <!-- search bar -->
+                <div class="input-group input-group-sm" style="height:30px; width:150px;">
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Search...">
+
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-secondary btn-number" style="background-color:forestgreen">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                 <!-- router link (cart) -->
+                <router-link to="#" active-class="active" exact>
+                  <a class="btn btn-success btn-sm ml-3"  style="background-color:forestgreen; color:white">
+                    <i class="fa fa-shopping-cart"></i> Cart
+                    <span class="badge badge-pill badge-danger">3</span>
+                </a></router-link>
+        </div>
+    </div>
+</nav>
+
+
+
+</div>
+</template>
+
+<script>
+import axios from 'axios'
+
+export default {
+  data(){
+    return {
+      address : '',
+      active: false
+    }
+  },
+  
+//  created(){
+//    navigator.geolocation.getCurrentPosition((position)=>{
+//       axios.get('https://maps.googleapis.com/maps/api/geocode/json?latlng='+position.coords.latitude+','+position.coords.longitude+'&key=AIzaSyC6Iv_6H0K5_2QqS25o6hD3EiHcgwxF6gc')
+//       .then(res=>{
+//         this.address = (res.data.results[0].formatted_address)
+//       })
+//       })
+// }
+
+  methods:{
+    locationFetching(){
+   navigator.geolocation.getCurrentPosition((position)=>{
+      axios.get('https://maps.googleapis.com/maps/api/geocode/json?latlng='+position.coords.latitude+','+position.coords.longitude+'&key=AIzaSyC6Iv_6H0K5_2QqS25o6hD3EiHcgwxF6gc')
+      .then(res=>{
+        this.address = (res.data.results[0].formatted_address)
+        // console.log(res.data)
+      })
+      })
+}
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
