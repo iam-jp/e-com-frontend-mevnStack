@@ -1,4 +1,4 @@
-jasshop.com<template>
+<template>
 <div>
     <banners :files = files ></banners>
     <div class="header" v-for="(store , i ) in stores" v-bind:key="i">
@@ -8,47 +8,12 @@ jasshop.com<template>
     <div class="container-fluid" style="height:35px;">
      <span style="float:left; color:white; margin-top:0px; margin-left:25px;">
          <b style="font-size:14px;">{{store.businessName}}</b>
+         
          </span>
        
         <div class="collapse navbar-collapse justify-content-end" id="navbarsExampleDefault">
             <ul class="navbar-nav">
-                <!-- <li class="nav-item-hover">
-                    <a class="nav-link" href="allproducts.html" style="color:whitesmoke; font-size:12px; font-weight:bold; margin-top:3px;">Groceries</a>
-                </li>
-                <li class="nav-item-hover">
-                    <a class="nav-link" href="category.html" style="color:whitesmoke; font-size:12px; font-weight:bold; margin-top:3px;">Home & Kitchen <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item-hover">
-                    <a class="nav-link" href="cart.html" style="color:whitesmoke; font-size:12px; font-weight:bold; margin-top:3px;">Toys</a>
-                </li>
-                 <li class="nav-item-hover">
-                    <a class="nav-link" href="cart.html" style="color:whitesmoke; font-size:12px; font-weight:bold; margin-top:3px;">Fruits</a>
-                </li>
-                 <li class="nav-item-hover">
-                    <a class="nav-link" href="cart.html" style="color:whitesmoke; font-size:12px; font-weight:bold; margin-top:3px;">Nuts</a>
-                </li>
-                 <li class="nav-item-hover">
-                    <a class="nav-link" href="cart.html" style="color:whitesmoke; font-size:12px; font-weight:bold; margin-top:3px;">Meat</a>
-                </li>
-                 <li class="nav-item-hover">
-                    <a class="nav-link" href="cart.html" style="color:whitesmoke; font-size:12px; font-weight:bold; margin-top:3px;">Cosmetics</a>
-                </li>
-                 <li class="nav-item-hover">
-                    <a class="nav-link" href="cart.html" style="color:whitesmoke; font-size:12px; font-weight:bold; margin-top:3px;">Insect Repellant</a>
-                </li>
-                <li class="nav-item-hover">
-                    <a class="nav-link" href="cart.html" style="color:whitesmoke; font-size:12px; font-weight:bold; margin-top:3px;">Vegetables & Fruits</a>
-                </li>
-                <li class="nav-item-hover">
-                    <a class="nav-link" href="cart.html" style="color:whitesmoke; font-size:12px; font-weight:bold; margin-top:3px;">Pharmacy</a>
-                </li>
-                <li class="nav-item-hover">
-                    <a class="nav-link" href="cart.html" style="color:whitesmoke; font-size:12px; font-weight:bold; margin-top:3px;">Electricals</a>
-                </li>
-                <li class="nav-item-hover">
-                    <a class="nav-link" href="cart.html" style="color:whitesmoke; font-size:12px; font-weight:bold; margin-top:3px;">More</a> <li class="nav-item">
-                    <i class="fa fa-angle-down" aria-hidden="true" style="font-size:14px;color:whitesmoke;margin-top:13px;"></i>
-                </li> -->
+               
                 <router-link :to="{name:'storePage',params:{storeName:store.businessName}}"  tag="li" active-class="active" exact>
                     <button class="btn btn-sm ml-3" style="background-color:forestgreen; float: right; height:35px; width:90px; color:white; font-size:12px; font-weight:initial; margin-right:25px">View Store</button>
                 </router-link>
@@ -58,7 +23,7 @@ jasshop.com<template>
     </div>
 </nav>
 
-   <storeDisplay :storeId = store._id :storeName= store.businessName ></storeDisplay>
+   <storeDisplay :storeId = store._id :storeName = store.businessName ></storeDisplay>
     </div>
 
 </div>
@@ -68,6 +33,7 @@ jasshop.com<template>
 import storeDisplay from './storeDisplay'
 import banners from './banners.vue'
 import axios from 'axios'
+import {mapGetters} from 'vuex'
 export default {
     data(){
         return{
@@ -78,7 +44,7 @@ export default {
     },
     methods:{
         loadStores(){
-      axios.get('http://thejasshop.com:5000/stores')
+      axios.get('http://localhost:5000/stores')
       .then(res => {
         const data = res.data
         this.stores=data  
@@ -86,7 +52,7 @@ export default {
     },
     loadBanners(){
       var vm =this
-    axios.get('http://thejasshop.com:5000/bannerupload')
+    axios.get('http://localhost:5000/bannerupload')
       .then(res => {
         res.data
         .forEach(data=>{
@@ -97,14 +63,21 @@ export default {
             vm.files.push(base64string)
             })
             vm.count = vm.files.length
-           console.log(vm.files.length)
+        //    console.log(vm.files.length)
       })
     }  
+    },
+    computed:{
+        ...mapGetters([
+            'getToken',
+            'getCart'
+        ])
     },
     created (){
        
         this.loadStores()
         this.loadBanners()
+       
     },
     components:{
         storeDisplay,

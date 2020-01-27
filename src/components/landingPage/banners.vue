@@ -8,11 +8,17 @@
         <div class="carousel-inner w-100" role="listbox">
         <div class="carousel-item row no-gutters active" style="margin-top:15px; margin-bottom:15px;" >
          
-                <div class="col-3 float-left" v-for="(file) in 4" v-bind:key="file"><img class="img-fluid" :src="'data:image/jpeg;base64,'+files[file]" style="padding:5px; height:220px; width:250px;"></div>
+                <div class="col-3 float-left" v-for="(file) in files.slice(0,4)" v-bind:key="file">
+                  <img class="img-fluid" :src="'data:image/jpeg;base64,'+file" style="padding:5px; height:220px; width:250px;">
+                  
+                  </div>
                 
             </div>
         <div class="carousel-item row no-gutters" style="margin-top:15px; margin-bottom:15px;">
-          <div class="col-3 float-left" v-for="(file) in 4" v-bind:key="file"><img class="img-fluid" :src="'data:image/jpeg;base64,'+files[file+3]" style="padding:5px; height:220px; width:250px;"></div>
+          <div class="col-3 float-left" v-for="(file) in files.slice(4,8)" v-bind:key="file">
+            <img class="img-fluid" :src="'data:image/jpeg;base64,'+file" style="padding:5px; height:220px; width:250px;">
+            
+            </div>
                 
             </div>
         </div>
@@ -47,25 +53,26 @@ export default {
             // files:[],
             // count:0
             
+            
         }
     },
     
-    mounted () {
-      var vm =this
-    axios.get('http://thejasshop.com:5000/bannerupload')
-      .then(res => {
-        res.data
-        .forEach(data=>{
+    // mounted () {
+    //   var vm =this
+    // axios.get('http://localhost:5000/bannerupload')
+    //   .then(res => {
+    //     res.data
+    //     .forEach(data=>{
             
-            const typedArray = new Uint8Array(data.image.data)
-            const stringChar = String.fromCharCode.apply(null,typedArray) 
-            const base64string = btoa(stringChar)
-            vm.files.push(base64string)
-            })
-            vm.count = vm.files.length
-           console.log(vm.files.length)
-      })
-    },
+    //         const typedArray = new Uint8Array(data.image.data)
+    //         const stringChar = String.fromCharCode.apply(null,typedArray) 
+    //         const base64string = btoa(stringChar)
+    //         vm.files.push(base64string)
+    //         })
+    //         vm.count = vm.files.length
+    //       //  console.log(vm.files.length)
+    //   })
+    // },
     props:['files']
   
 }

@@ -32,7 +32,7 @@
                   <i class="fa fa-user" aria-hidden="true" style="font-size:14px;color:teal; margin-left:20px; margin-top:10px"></i>
                 </div>
                  <!-- router link (account) -->
-                <router-link to="#" tag="li"  active-class="active" ><a class="nav-link" style="color:black; font-size: 12px; text-decoration:none;" >Account <span class="sr-only">(current)</span></a></router-link>
+                <router-link to="#" tag="li"  active-class="active" ><a class="nav-link" style="color:black; font-size: 12px; text-decoration:none;" >Account </a></router-link>
               
               <!--icons(wishlist)-->
                <div class="input-group input-group-sm"> 
@@ -41,6 +41,25 @@
                <!-- router link (wishlist) -->
               <router-link to="#" tag="li" active-class="active" exact><a class="nav-link" style="color:black; font-size:12px; padding-right:20px">Wishlist</a></router-link>
             </ul>
+            <!--- login button --->
+
+             <div class="input-group input-group-sm" style="height:30px; width:100px;margin-right:10px">
+                    
+
+                    <div class="input-group-append">
+                        <button type="button"
+                        class="btn btn-success btn-sm ml-3" 
+                        style="background-color:white;color:black;border:none;font-size:12px"
+                        @click="showModal">
+                            Login 
+                        </button>
+                    </div>
+                </div>
+
+                <login 
+                v-show="isModalVisible"
+                @close="closeModal"
+                />
 
               <!-- search bar -->
                 <div class="input-group input-group-sm" style="height:30px; width:150px;">
@@ -53,10 +72,11 @@
                     </div>
                 </div>
                  <!-- router link (cart) -->
-                <router-link to="#" active-class="active" exact>
-                  <a class="btn btn-success btn-sm ml-3"  style="background-color:forestgreen; color:white">
+                <router-link to="/user/profile/cart" active-class="active" exact>
+                  <a class="btn btn-success btn-sm ml-3"  style="background-color:forestgreen; color:white"
+                  @click="cart()">
                     <i class="fa fa-shopping-cart"></i> Cart
-                    <span class="badge badge-pill badge-danger">3</span>
+                    <span class="badge badge-pill badge-danger">{{getCartCount}}</span>
                 </a></router-link>
         </div>
     </div>
@@ -69,12 +89,18 @@
 
 <script>
 import axios from 'axios'
-
+import login from './../login'
+import {mapGetters} from 'vuex'
+import  store from './../../vuex/store'
 export default {
   data(){
     return {
+      storeName:[],
+      products:{},
+      onlineProducts:[],
       address : '',
-      active: false
+      active: false,
+      isModalVisible: false,
     }
   },
   
@@ -96,7 +122,65 @@ export default {
         // console.log(res.data)
       })
       })
-}
+},
+    showModal() {
+        this.isModalVisible = true;
+      },
+    closeModal() {
+        this.isModalVisible = false;
+      },
+    cart(){
+      if(store.state.user.token){
+        this.storeSeparation(this.getCart)
+        this.$store.dispatch('seperateCart',this.products)
+        this.onlineProductSeperation(this.getCart)
+
+      }else{
+        this.isModalVisible= true
+      }
+    },
+    storeSeparation(cart){
+           
+            cart.forEach((ele)=>{
+                if(ele.storeProduct && !this.storeName.includes(ele.storeName)){
+                    this.storeName.push(ele.storeName)   
+                }
+                
+            })
+            this.storeName.forEach((name)=>{
+              
+              this.products[name] = new Array()
+            this.productRepitor(this.getCart,name,this.products[name])
+                
+            })
+            // console.log(this.products)
+        },
+        productRepitor(cart,name,array){
+           cart.forEach((ele)=>{
+               if(ele.storeName == name && ele.storeProduct){
+                   array.push(ele)
+               }
+           })      
+        },
+        onlineProductSeperation(cart){
+          cart.forEach((ele)=>{
+            if(!ele.storeProduct){
+              this.onlineProducts.push(ele)
+            }
+          })
+          this.$store.dispatch('getOnlineCart',this.onlineProducts)
+        }
+
+  },
+  computed:{
+    ...mapGetters([
+      'getToken',
+      'getCartCount',
+      'getCart'
+    ])
+  },
+  components:{
+    login
   }
 }
 </script>

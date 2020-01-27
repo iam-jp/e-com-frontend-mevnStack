@@ -1,4 +1,4 @@
-thejasshop.com5000<template>
+<template>
 <div>
     <div>
     <banners :files=files></banners>
@@ -8,21 +8,20 @@ thejasshop.com5000<template>
     >
     <div class="container-fluid" style="height:35px;">
      <span style="float:left; color:white; margin-top:0px; margin-left:25px;">
-         <b style="font-size:14px;">{{this.$route.params.storeName}}</b>
+         <b style="font-size:14px;">{{this.store[0].businessName}}</b>
+         
          </span>
+
     </div>
     </nav>
     </div>
-    
-   <cattitle></cattitle>
    
-    <div>
-    <onlineProducts :storeName = store.businessName></onlineProducts>
+   <cattitle></cattitle>
+    <onlineProducts :storeName = this.$route.params.storeName></onlineProducts>
+    <storeCategory :store = this.$route.params.storeName ></storeCategory>
+    
     </div>
-    </div>
-<div style="margin-top:65px">
- 
-  </div>
+
 </div>
 </template>
 
@@ -32,23 +31,31 @@ import storeDisplay from './../landingPage/storeDisplay'
 import banners from './../landingPage/banners'
 import onlineProducts from './../onlineProducts'
 import cattitle from './../catTitle'
+import storeCategory from './storeCategory'
 export default {
     data(){
         return{
             files:[],
-            store:''
+            store:{},
+            
+            temp:[],
+            products:{},
+            categories:[],
+            category:[],
+            tester:[]
         }
     },
 components:{
     banners,
     onlineProducts,
     storeDisplay,
-    cattitle
+    cattitle,
+    storeCategory
 },
 methods:{
     loadBanners(){
       var vm =this
-    axios.get('http://thejasshop.com:5000/bannerupload')
+    axios.get('http://localhost:5000/bannerupload')
       .then(res => {
         res.data
         .forEach(data=>{
@@ -59,20 +66,24 @@ methods:{
             vm.files.push(base64string)
             })
             vm.count = vm.files.length
-           console.log(vm.files.length)
+        //    console.log(vm.files.length)
       })
     },
     loadStoreDetails(name){
-        axios.get('http://thejasshop.com:5000/store_by_name/'+name)
+        axios.get('http://localhost:5000/store_by_name/'+name)
         .then(res=>{
-            this.store=(res.data)
+            Object.assign(this.store,res.data)
+            this.$store.dispatch('getStore',this.store[0].businessName)
         })
-    }  
+    }, 
+    
+    
 },
 mounted(){
     var vm = this
     this.loadBanners()
     this.loadStoreDetails(vm.$route.params.storeName)
+    
 }
 }
 </script>

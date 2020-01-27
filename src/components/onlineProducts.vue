@@ -17,13 +17,13 @@
         <div class="container=fluid justify-content-center" style="margin-top:10px; margin-left:35px; margin-bottom:35px;">
   <div class="row">
    
-    <div class="col-12 col-md-4 col-lg-2 col-sm-4 float-left" style="margin-top:70px;" 
+    <div class="col-12 col-md-4 col-lg-2 col-sm-4 float-left" style="margin-top:10px;" 
     
-     v-for="(product,i ) in products " v-bind:key="i">
+     v-for="(product,i ) in products.slice(0,6) " v-bind:key="i">
       <img class="img-fluid">
         <div class="product-grid2">
           <div class="product-image2">
-            <router-link :to="{name:'productDetails',params:{storeName:storeName,id:product._id}}"  active-class="active" exact>
+            <router-link :to="{name:'onlineProductDetails',params:{storeName:storeName,id:product._id}}"  active-class="active" exact>
             <img class="pic-2" :src=product.baseImage>
             </router-link>
             <ul class="social">
@@ -36,10 +36,13 @@
               <h3 class="title" style="white-space:nowrap"><a href="#">{{product.title}}</a></h3>
                 <sup style="text-decoration:line-through; color: red; font-size:10px; font-weight:number">{{product.price}}</sup>
                   <span style="font-weight:bolder">{{product.salePrice}} </span>
-                  <cart></cart>
+
+                  <cart :storeName = getStore :product = product :storeProduct=false></cart>
             </div>
+
     </div>
     </div>
+    
   </div>
 
         </div>
@@ -51,6 +54,7 @@
 import axios from 'axios'
 import cattitle from './catTitle'
 import cart from './landingPage/cartChild'
+import {mapGetters} from 'vuex'
 export default {
     data(){
         return{
@@ -59,9 +63,10 @@ export default {
     },
     methods:{
         loadData(){
-            axios.get('http://thejasshop.com:5000/get_online_products')
+            axios.get('http://localhost:5000/get_online_products')
             .then((res)=>{
                 this.products = res.data
+                console.log(this.products)
                 
             })
         }
@@ -73,6 +78,11 @@ export default {
     components:{
         cattitle,
         cart
+    },
+    computed:{
+      ...mapGetters([
+        'getStore'
+      ])
     }
 }
 </script>

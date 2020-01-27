@@ -1,5 +1,5 @@
 <template>
-<div>
+ <div>
     <div class="header" >
     <nav class="navbar navbar-expand-md navbar-dark" 
     style="background-color:#192a56"
@@ -12,28 +12,23 @@
     </nav>
     </div>
 
-   
-
-    <productChild></productChild>
     
-    <productDesc></productDesc>
-     <similarProducts></similarProducts>
-     
 
+    <productChild
+        :productId = this.$route.params.id
+        :URL = product.baseImage
+        :productDetails = {product}
+    ></productChild>
+    
+    <productDesc :product = product></productDesc>
 
 </div>
 </template>
 
 <script>
 import axios from 'axios'
-import productZoomer from './productZoomer'
-import productContent from './productDetailsContent'
-import productDesc from './productDescriptions'
 import productChild from './productDetailsChild'
-import storeCategory from './storePage/storeCategory'
-import cattitle from './catTitle'
-import onlineProducts from './onlineProducts'
-import similarProducts from './similarProducts'
+import productDesc from './productDescriptions'
 
 export default {
     data(){
@@ -45,10 +40,10 @@ export default {
     },
     methods:{
         loadProducts(id){
-            axios.get('http://localhost:5000/products_by_id/' + id)
+            axios.get('http://localhost:5000/onlineproducts_by_id/' + id)
             .then((res)=>{
                 this.product = res.data
-                this.$store.dispatch('saveProduct',{res})
+                console.log(this.product)
             })
         }
     },
@@ -56,13 +51,8 @@ export default {
        this.loadProducts(this.$route.params.id )
     },
     components:{
-       
         productChild,
-        productDesc,
-        storeCategory,
-        cattitle,
-        onlineProducts,
-        similarProducts
+        productDesc
     }
 }
 </script>

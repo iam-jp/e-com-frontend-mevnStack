@@ -20,29 +20,126 @@
             </span>
 
             <span class="input-group-append">
-                <a href="#" class="btn btn-success" style="background-color:#2c2c54;font-size:10px; width:80px; height:30px; margin-bottom:10px;">Add to cart</a>
+                <button  
+                class="btn btn-success" 
+                style="background-color:#2c2c54;font-size:10px; width:80px; height:30px; margin-bottom:10px;"
+                @click="cart()">Add to cart</button>
             </span>
+        <login 
+        v-show="isModalVisible"
+        @close="closeModal"
+        />
         </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
+import login from './../login'
+import {mapGetters} from 'vuex'
+import store from './../../vuex/store'
 export default {
     data(){
         return{
-            counter:1
+            counter:1,
+            isModalVisible:false,
+            toCart:{}
         }
     },
     methods:{
         addCount(){
-      this.counter++
+           
+                if(store.state.user.token){
+                    this.counter++
+                    
+                }else{
+                    this.isModalVisible=true
+                    
+                }   
+            
+            
+            },
+
+        decreaseCount(){
+            if(store.state.user.token){
+                
+                if(this.counter>1){
+                   
+                this.counter--
+                }
+            }else{
+                
+                this.isModalVisible = true
+            }
+            
+            },
+        showModal() {
+            this.isModalVisible = true;
+        },
+        closeModal() {
+            this.isModalVisible = false;
+        },
+        cart(){
+            if(store.state.user.token){
+                const vm = this
+                this.toCart.counter = this.counter
+                this.toCart.product = this.product
+                this.toCart.storeName = this.storeName
+                this.toCart.storeProduct = this.storeProduct
+               
+                this.apiToCart(this.toCart)
+                this.getapiCart()
+
+               
+                
+                
+               
+               
+            }
+            else{
+                this.isModalVisible = true
+            }
+        },
+        apiToCart(toCart){
+             const axiosInstance = axios.create({
+                    baseURL:'http://localhost:5000/'
+                })
+                axiosInstance({method:'PATCH',
+                url:'user/to_cart',
+                data:toCart,
+                headers:{Authorization: `Bearer ${this.$store.state.user.token}`}})
+                .then((res)=>{
+                    console.log(res.data)
+                     this.$store.dispatch('toCart',res.data)
+                })
+        },
+
+            getapiCart(){
+                const axiosInstance = axios.create({
+                    baseURL:'http://localhost:5000/'
+                })
+                axiosInstance({method:'get',
+                url:'user/me',
+                headers:{Authorization: `Bearer ${this.$store.state.user.token}`}})
+                .then((res)=>{
+                  console.log(res.data.cart)
+                   return res.data.cart
+
+                })
+        }
+        
     },
-    decreaseCount(){
-      if(this.counter>1){
-         this.counter--
-      }
-    }
-    }
+    computed:{
+        ...mapGetters([
+            'getToken',
+            'getProduct',
+            'getCart'
+        ])
+    },
+    components:{
+        login
+    },
+    props:['storeName','product','storeProduct']
 }
 </script>
 

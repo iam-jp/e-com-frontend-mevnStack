@@ -1,14 +1,12 @@
 <template>
-  
-
-<div class="container=fluid justify-content-center" style="margin-top:10px; margin-left:35px; margin-bottom:35px;">
+    <div class="container=fluid justify-content-center" style="margin-top:10px; margin-left:35px; margin-bottom:35px;">
   <div class="row">
    
-    <div class="col-12 col-md-4 col-lg-2 col-sm-4 float-left" v-for="(product,i ) in products " v-bind:key="i">
+    <div class="col-12 col-md-4 col-lg-2 col-sm-4 float-left" v-for="(product,i ) in temp " v-bind:key="i">
       <img class="img-fluid">
         <div class="product-grid2">
           <div class="product-image2">
-            <router-link :to="{name:'productDetails',params:{storeName:product.url,id:product._id}}"  active-class="active" exact>
+            <router-link :to="{name:'productDetails',params:{storeName:storeName,id:product._id}}"  active-class="active" >
             <img class="pic-2" :src=product.baseImage>
             </router-link>
             <ul class="social">
@@ -22,7 +20,7 @@
                 <sup style="text-decoration:line-through; color: red; font-size:10px; font-weight:number">$120</sup>
                   <span style="font-weight:bolder">{{product.price}} </span>
                  
-                  <cart :storeName = storeName  :product = product :storeProduct=true></cart>
+                  <cart></cart>
           </div>  
           
         </div>
@@ -30,51 +28,71 @@
 </div>
 
 </div>
-<!-- {{stores}} -->
-<!-- {{products}} -->
-  <!-- <div >
-    
-  </div> -->
-
- 
+            
+           
+            
+            
+        
 </template>
 
 <script>
-import cart from './cartChild'
-import axios from 'axios'
+import {mapGetters} from'vuex'
+import cart from './landingPage/cartChild'
 export default {
-  data(){
+    
+    data(){
         return{
-            products:[],
-            counter:0
-             
+            temp:[],
+
+            
         }
     },
-    mounted () {
-      this.counter===0
-      var vm = this
-    this.loadProducts(vm.storeId)
-  },
-  methods:{
-    loadProducts(storeId){
-      axios.get('http://localhost:5000/stores/product_list/' + storeId)
-      .then(res=>{
-        const list = res.data
-       list.forEach(element=>{
-          this.products.push(element)
-       })
-      })
+    computed:{
+        ...mapGetters([
+            'getProduct'
+        ])
     },
-  },
-  props:['storeId','storeName'],
-  components:{
-    cart
-  }
-
+    methods:{
+        loadProductImages(){
+           Object.keys(this.dataBundle).forEach(ele=>{
+            this.temp.push((this.filterProducts(this.dataBundle[ele],this.getProduct.subCategory2)))
+            
+           })
+           this.temp = this.temp.filter((ele)=>{
+              return ele != undefined
+           })
+           console.log(this.temp)
+         
+        },
+        filterProducts(product,category){
+            if(product.subCategory2==category){
+                
+                return (product)
+                
+            }else{
+                return 
+            }
+        }
+    },
+    props: {
+        dataBundle:{
+            type:Object
+        },
+        
+        storeName:{
+            type:String
+        }
+    },
+    mounted(){
+       setTimeout(this.loadProductImages,500)
+    },
+    components:{
+        cart
+    }
 }
 </script>
 
-<style scoped>
+<style  scoped>
 .product-image2{border-style:none; border-width:0px; border-color:whitesmoke; flex-shrink:0; height:190px;  width:170px; padding:20px}
 .pic-2{width:100%; height:100%;}
 .product-grid2{width:150px;}  
