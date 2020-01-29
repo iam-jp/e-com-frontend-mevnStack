@@ -92,6 +92,7 @@ import axios from 'axios'
 import login from './../login'
 import {mapGetters} from 'vuex'
 import  store from './../../vuex/store'
+
 export default {
   data(){
     return {
@@ -101,28 +102,28 @@ export default {
       address : '',
       active: false,
       isModalVisible: false,
+      user:{},
+      stores:'',
+      filteredStores:[],
+      geoCode:''
     }
   },
   
-//  created(){
-//    navigator.geolocation.getCurrentPosition((position)=>{
-//       axios.get('https://maps.googleapis.com/maps/api/geocode/json?latlng='+position.coords.latitude+','+position.coords.longitude+'&key=AIzaSyC6Iv_6H0K5_2QqS25o6hD3EiHcgwxF6gc')
-//       .then(res=>{
-//         this.address = (res.data.results[0].formatted_address)
-//       })
-//       })
-// }
-
   methods:{
     locationFetching(){
-   navigator.geolocation.getCurrentPosition((position)=>{
-      axios.get('https://maps.googleapis.com/maps/api/geocode/json?latlng='+position.coords.latitude+','+position.coords.longitude+'&key=AIzaSyC6Iv_6H0K5_2QqS25o6hD3EiHcgwxF6gc')
-      .then(res=>{
-        this.address = (res.data.results[0].formatted_address)
-        // console.log(res.data)
-      })
-      })
-},
+      this.coordinateFetching()
+     
+      // console.log(this.getLocation)
+      
+      
+      // console.log(this.getLocation)
+      // console.log(store.state.longitude)
+      
+      
+      },
+
+      
+
     showModal() {
         this.isModalVisible = true;
       },
@@ -169,19 +170,80 @@ export default {
             }
           })
           this.$store.dispatch('getOnlineCart',this.onlineProducts)
-        }
+        },
 
+     filterStores(stores){
+         const centre = new Object
+       const check = new Object
+       const table = []
+      //  const n = false
+       stores.forEach((store)=>{
+         centre.lat=this.getLocation.latitude
+         centre.lng = this.getLocation.longitude
+         console.log(centre)
+         
+         check.lat =store.location.coordinates[1]
+         check.lng =store.location.coordinates[0]
+         
+        const n = this.inCircle(check,centre,2)
+         table.push(n)
+         if(n){
+           if(!this.filteredStores.includes(store)){
+             this.filteredStores.push(store)
+           }
+           
+         }
+        
+       })
+       console.log(table)
+     
+
+       this.$store.dispatch('setUserStores',this.filteredStores)
+
+       
+     },
+
+     inCircle(checkPoint,centerPoint,km){
+          const ky = 40000 / 360;
+          const kx = Math.cos(Math.PI * centerPoint.lat / 180.0) * ky;
+          console.log(kx)
+          const dx = Math.abs(centerPoint.lng - checkPoint.lng) * kx;
+          console.log(dx)
+          const dy = Math.abs(centerPoint.lat - checkPoint.lat) * ky;
+          console.log(dy)
+          return Math.sqrt(dx * dx + dy * dy) <= km;
+        },
+
+      coordinateFetching(){
+       
+          navigator.geolocation.watchPosition((position)=>{
+            this.$store.dispatch('setLocation',position.coords)
+            this.filterStores(store.state.allStores)
+            
+          this.geoCode = position.coords
+          axios.get('https://maps.googleapis.com/maps/api/geocode/json?latlng='+position.coords.latitude+','+position.coords.longitude+'&key=AIzaSyC6Iv_6H0K5_2QqS25o6hD3EiHcgwxF6gc')
+      .then(res=>{
+        this.address = (res.data.results[0].formatted_address)
+        console.log(res.data.results)
+        
+      })
+        })
+        
+         }
   },
   computed:{
     ...mapGetters([
       'getToken',
       'getCartCount',
-      'getCart'
+      'getCart',
+      'getLocation',
+      'getAllstores'
     ])
   },
   components:{
     login
-  }
+  },
+  
 }
 </script>
 

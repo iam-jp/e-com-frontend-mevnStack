@@ -16,7 +16,11 @@ export default new Vuex.Store({
             onlineProducts:[]
         },
         cart:{},
-        storesInCart:[]
+        storesInCart:[],
+       location:{},
+       longitude:'',
+       allStores:'',
+       userStores:''
     },
     getters:{
         getProduct:state=>{
@@ -43,6 +47,18 @@ export default new Vuex.Store({
         },
         getOnlineCart:state=>{
             return state.onlineCart
+        },
+        getLocation:state=>{
+            return state.location
+        },
+        getLongitude:state=>{
+            return state.longitude
+        },
+        getAllStores:state=>{
+            return state.allStores
+        },
+        getUserStores:state=>{
+            return state.userStores
         }
         
     },
@@ -86,6 +102,21 @@ export default new Vuex.Store({
 
         getOnlineCart(state,data){
             state.onlineCart= data
+        },
+
+        setLocation(state,data){
+           
+           state.location = data
+           
+        },
+
+
+        setAllStores(state,data){
+            state.allStores = data
+        },
+
+        setUserStores(state,data){
+            state.userStores = data
         }
     
     },
@@ -144,6 +175,20 @@ export default new Vuex.Store({
 
         getOnlineCart({commit},payload){
             commit('getOnlineCart',payload)
+        },
+
+        setLocation({commit},payload){
+           
+            commit('setLocation',payload)
+        },
+
+        setAllStores({commit},payload){
+            // console.log(payload)
+            commit('setAllStores',payload)
+        },
+
+        setUserStores({commit},payload){
+            commit('setUserStores',payload)
         }
     }
 

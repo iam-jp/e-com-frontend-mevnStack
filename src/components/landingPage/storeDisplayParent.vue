@@ -1,7 +1,11 @@
 <template>
 <div>
     <banners :files = files ></banners>
-    <div class="header" v-for="(store , i ) in stores" v-bind:key="i">
+
+    
+   
+    <div>
+    <div class="header" v-for="(store , i ) in getUserStores" v-bind:key="i">
     <nav class="navbar navbar-expand-md navbar-dark" 
     style="background-color:#192a56"
     >
@@ -25,6 +29,7 @@
 
    <storeDisplay :storeId = store._id :storeName = store.businessName ></storeDisplay>
     </div>
+    </div>
 
 </div>
 </template>
@@ -34,22 +39,18 @@ import storeDisplay from './storeDisplay'
 import banners from './banners.vue'
 import axios from 'axios'
 import {mapGetters} from 'vuex'
+
 export default {
     data(){
         return{
-            stores:'',
-            files:[]
+            stores:{},
+            files:[],
+            filteredStores:[]
             
         }
     },
     methods:{
-        loadStores(){
-      axios.get('http://localhost:5000/stores')
-      .then(res => {
-        const data = res.data
-        this.stores=data  
-        })
-    },
+        
     loadBanners(){
       var vm =this
     axios.get('http://localhost:5000/bannerupload')
@@ -65,18 +66,25 @@ export default {
             vm.count = vm.files.length
         //    console.log(vm.files.length)
       })
-    }  
+    },
+    
     },
     computed:{
         ...mapGetters([
             'getToken',
-            'getCart'
+            'getCart',
+            'getLocation',
+            'getAllStores',
+            'getUserStores',
+            'getLocation',
+            
         ])
     },
     created (){
        
-        this.loadStores()
+        
         this.loadBanners()
+        
        
     },
     components:{

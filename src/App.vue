@@ -13,7 +13,8 @@ import axios from 'axios'
 export default {
   data(){
     return{
-      signIn:false
+      signIn:false,
+      stores:''
     }
   },
   components: {
@@ -30,17 +31,27 @@ export default {
                 url:'user/me',
                 headers:{Authorization: `Bearer ${this.$store.state.user.token}`}})
                 .then((res)=>{
-                  
-                  this.$store.dispatch('getCart',res.data.cart)
-
                 })
-        }
+        },
+      loadStores(){
+      axios.get('http://localhost:5000/stores')
+      .then(res => {
+        const data = res.data
+        this.stores=data  
+        
+        this.$store.dispatch('setAllStores',this.stores)
+        
+        })
+    },
+     
   },
   created(){
     if(!this.signIn){
       this.$store.dispatch('tryAutoLogin')
       this.getapiCart()
       this.signIn=true
+      this.loadStores()
+     
     }
 
     
